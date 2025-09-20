@@ -53,6 +53,8 @@ const OrderSummary = ({ totalPrice, items }) => {
         return toast("Please select an address");
       }
 
+      const token = await getToken();
+
       const orderData = {
         addressId: selectedAddress.id,
         items,
@@ -61,7 +63,6 @@ const OrderSummary = ({ totalPrice, items }) => {
       if (coupon) {
         orderData.couponCode = coupon.code;
       }
-      const token = await getToken();
       // create order
       const { data } = await axios.post("/api/orders", orderData, {
         headers: { Authorization: `Bearer ${token}` },

@@ -2,9 +2,9 @@
 import { useEffect, useState } from "react";
 import Loading from "@/components/Loading";
 import { orderDummyData } from "@/assets/assets";
-import { useAuth } from "@clerk/nextjs";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useAuth } from "@clerk/nextjs";
 
 export default function StoreOrders() {
   const { getToken } = useAuth();
@@ -15,7 +15,12 @@ export default function StoreOrders() {
 
   const fetchOrders = async () => {
     try {
-      const { token } = await getToken();
+      const token = await getToken?.();
+      if (!token) {
+        toast.error("Authentication failed. Please log in again.");
+        setLoading(false);
+        return;
+      }
       const { data } = await axios.get("/api/store/orders", {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -31,7 +36,12 @@ export default function StoreOrders() {
 
   const updateOrderStatus = async (orderId, status) => {
     try {
-      const { token } = await getToken();
+      const token = await getToken?.();
+      if (!token) {
+        toast.error("Authentication failed. Please log in again.");
+        setLoading(false);
+        return;
+      }
       await axios.post(
         "/api/store/orders",
         { orderId, status },
@@ -64,7 +74,7 @@ export default function StoreOrders() {
 
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [getToken]);
 
   if (loading) return <Loading />;
 

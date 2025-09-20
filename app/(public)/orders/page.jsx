@@ -18,7 +18,12 @@ export default function Orders() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const { token } = await getToken();
+        const token = await getToken?.();
+        if (!token) {
+          toast.error("Authentication failed. Please log in again.");
+          setLoading(false);
+          return;
+        }
         const { data } = await axios.get("/api/orders", {
           headers: {
             Authorization: `Bearer ${token}`,
